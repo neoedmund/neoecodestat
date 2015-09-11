@@ -1,5 +1,7 @@
 # neoecodestat
-source code statistic tool
+A source code statistic tool.
+
+Print out file count , line count, size in bytes of files in dir.
 
 
 ## usage
