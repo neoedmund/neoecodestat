@@ -1,9 +1,13 @@
 package neoe.srcstat;
 
 import java.io.BufferedReader;
+import java.io.BufferedWriter;
 import java.io.File;
+import java.io.FileOutputStream;
 import java.io.FileReader;
 import java.io.IOException;
+import java.io.OutputStreamWriter;
+import java.io.PrintWriter;
 import java.util.List;
 
 import neoe.util.Config;
@@ -61,17 +65,22 @@ public class Main {
 				statFile(data[i], f, false);
 			}
 		}
-
+		
+		File fout = new File(dir, "neoesrcstat.txt");
+		PrintWriter out = new PrintWriter(new BufferedWriter(new OutputStreamWriter(new FileOutputStream(fout))));
+		out.println("dir:"+dir);
 		// print result
 		for (int i = 0; i < extsize; i++) {
 			int[] v = data[i];
-			System.out.printf("%s\t%,3d files\t%,3d lines\t%,3d bytes\n", ext.get(i), v[0], v[1], v[2]);
+			out.printf("%s\t%,3d files\t%,3d lines\t%,3d bytes\n", ext.get(i), v[0], v[1], v[2]);
 		}
 		{
 			int[] v = data[extsize];
-			System.out.printf("%s\t%,3d files\t%,3d lines\t%,3d bytes\n", "others", v[0], v[1], v[2]);
+			out.printf("%s\t%,3d files\t%,3d lines\t%,3d bytes\n", "others", v[0], v[1], v[2]);
 		}
-
+		out.println("---");
+		out.close();
+		System.out.println("write to "+fout.getAbsolutePath());
 	}
 
 	private boolean isIgnored(File f, List ignore) {
