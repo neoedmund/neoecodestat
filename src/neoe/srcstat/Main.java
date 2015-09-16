@@ -8,7 +8,12 @@ import java.io.FileReader;
 import java.io.IOException;
 import java.io.OutputStreamWriter;
 import java.io.PrintWriter;
+import java.util.ArrayList;
+import java.util.Comparator;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
+import java.util.Map.Entry;
 
 import neoe.util.Config;
 import neoe.util.FileIterator;
@@ -20,7 +25,10 @@ public class Main {
 		new Main().run();
 	}
 
+	private Map<String, Integer> etcMap;
+
 	private void run() throws Exception {
+		
 		List ext = (List) Config.get("ext");
 		List dir = (List) Config.get("dir");
 		List ignore = (List) Config.get("ignore");
@@ -34,6 +42,7 @@ public class Main {
 
 	private void stat(String dir, List ext, List ignore) throws IOException {
 		// init
+		etcMap = new HashMap<String,Integer>();
 		int extsize = ext.size();
 		System.out.println("stat dir=" + dir);
 		int[][] data;
@@ -63,6 +72,7 @@ public class Main {
 			}
 			if (!found) {
 				statFile(data[i], f, false);
+				statEtcFiles(f);
 			}
 		}
 		
@@ -78,9 +88,40 @@ public class Main {
 			int[] v = data[extsize];
 			out.printf("%s\t%,3d files\t%,3d lines\t%,3d bytes\n", "others", v[0], v[1], v[2]);
 		}
-		out.println("---");
+		out.println("---others:---");
+		
+		// etc
+		List<Entry<String, Integer>> etc = new ArrayList<Entry<String, Integer>>( etcMap.entrySet());
+		etc.sort(new Comparator<Entry<String, Integer>>() {
+
+			@Override
+			public int compare(Entry<String, Integer> o1, Entry<String, Integer> o2) {				
+				return -o1.getValue()+o2.getValue();
+			}
+		});
+		for (Entry<String, Integer> e: etc){
+			out.printf(".%s : %d\n", e.getKey(), e.getValue());
+		}
 		out.close();
 		System.out.println("write to "+fout.getAbsolutePath());
+	}
+
+	private void statEtcFiles(File f) {
+		
+		String fn = f.getName();
+		int p1 = fn.lastIndexOf('.');
+		String ext = "";
+		if (p1>=0){
+			ext = fn.substring(p1+1);
+		}
+		// add map
+		Integer cnt = etcMap.get(ext);
+		if (cnt==null){
+			etcMap.put(ext,1);
+		}else{
+			etcMap.put(ext,cnt+1);
+		}
+		
 	}
 
 	private boolean isIgnored(File f, List ignore) {
