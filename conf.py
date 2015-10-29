@@ -1,5 +1,6 @@
 {
-	ignore:[".svn"],
-	ext:[xml,java,jsp,html],
-	dir:["dir1", "dir2" ,"dir3"],
+	ignore:[".svn", ".git"],
+	ext:[.h, .c, .txt, .S, Makefile, Kconfig, .dts, .dtsi],
+	dir:["E:/oss/linux-4.2.4.tar/linux-4.2.4/linux-4.2.4"],
+	deep:true,
 }
