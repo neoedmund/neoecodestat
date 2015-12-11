@@ -163,9 +163,6 @@ public class Main {
 
 	private void printDeep(PrintWriter out, final HashMap<String, long[][]> map, List ext) {
 		List<String> keys = new ArrayList<String>(map.keySet());
-		out.println("--- sort by name:");
-		Collections.sort(keys);
-		printDeepByKeys(keys, out, map, ext);
 
 		out.println("--- sort by sum lines:");
 		Collections.sort(keys, new Comparator() {
@@ -206,14 +203,22 @@ public class Main {
 			}
 		});
 		printDeepByKeys(keys, out, map, ext);
+
+		out.println("--- sort by name:");
+		Collections.sort(keys);
+		printDeepByKeys(keys, out, map, ext);
 	}
 
 	private void printDeepByKeys(List<String> keys, PrintWriter out, HashMap<String, long[][]> map, List ext) {
 		int total = keys.size();
 		int index = 0;
 		for (String key : keys) {
-			out.printf("%s\t(%d/%d)\n", key, ++index, total);
 			long[][] rows = map.get(key);
+
+			long bytes = rows[rows.length - 1][2];
+
+			out.printf("%s\t(%d/%d) %,3d bytes\n", key, ++index, total, bytes);
+
 			for (int i = 0; i < rows.length - 2; i++) {
 				long[] row = rows[i];
 				if (row[0] > 0) {
