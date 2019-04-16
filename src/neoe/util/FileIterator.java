@@ -2,6 +2,7 @@ package neoe.util;
 
 import java.io.BufferedReader;
 import java.io.File;
+import java.nio.file.Files;
 import java.io.FileReader;
 import java.util.ArrayList;
 import java.util.Arrays;
@@ -88,7 +89,13 @@ public class FileIterator implements Iterable<File> {
 				if (f.isDirectory()) {
 					File[] sub = f.listFiles();
 					if (sub!=null) {
-						buf.addAll(Arrays.asList(sub));
+						for (File ss:sub) {
+							if (!Files.isSymbolicLink(ss.toPath())) {
+								buf.add(ss);
+							}else{
+								System.out.println("skip symlink "+ss.getAbsolutePath());
+							}
+						}
 					} else {
 						System.out.println("skip "+f.getAbsolutePath());
 					}
