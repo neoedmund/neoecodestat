@@ -87,7 +87,11 @@ public class FileIterator implements Iterable<File> {
 				File f = buf.remove(0);
 				if (f.isDirectory()) {
 					File[] sub = f.listFiles();
-					buf.addAll(Arrays.asList(sub));
+					if (sub!=null) {
+						buf.addAll(Arrays.asList(sub));
+					} else {
+						System.out.println("skip "+f.getAbsolutePath());
+					}
 				}
 				return f;
 			}
