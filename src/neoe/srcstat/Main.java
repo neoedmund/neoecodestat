@@ -46,6 +46,21 @@ public class Main {
 	}
 
 	private void stat(String dir, List ext, List ignore, boolean deep) throws IOException {
+		String saveDir = dir;
+		try {
+			File fout = new File(saveDir, "neoesrcstat.txt");
+			PrintWriter out = new PrintWriter(new BufferedWriter(new OutputStreamWriter(new FileOutputStream(fout))));
+			out.println("result of neoesourcecodestat v1.1");
+			out.close();
+		} catch (Exception ex) {
+			System.out.println("stat dir seems cannot write, trying current working dir");
+			saveDir = ".";
+			File fout = new File(saveDir, "neoesrcstat.txt");
+			PrintWriter out = new PrintWriter(new BufferedWriter(new OutputStreamWriter(new FileOutputStream(fout))));
+			out.println("result of neoesourcecodestat v1.1");
+			out.close();
+			System.out.println("ok");
+		}
 		// init
 		etcMap = new HashMap<String, Long>();
 		int extsize = ext.size();
@@ -70,6 +85,7 @@ public class Main {
 			if (isIgnored(f, ignore))
 				continue;
 			String name = f.getName().toLowerCase();
+			System.out.println(f.getCanonicalPath());
 			int i = 0;
 			boolean found = false;
 			String deepKey = f.getParentFile().getCanonicalPath();
@@ -112,7 +128,7 @@ public class Main {
 			}
 		}
 
-		File fout = new File(dir, "neoesrcstat.txt");
+		File fout = new File(saveDir, "neoesrcstat.txt");
 		PrintWriter out = new PrintWriter(new BufferedWriter(new OutputStreamWriter(new FileOutputStream(fout))));
 		out.println("result of neoesourcecodestat v1.1");
 		out.println("dir:" + dir);
